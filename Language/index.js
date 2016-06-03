@@ -4,11 +4,16 @@
 
 "use strict";
 
-import { NativeModules } from "react-native";
+import { DeviceExtension } from "NativeModules";
+
+let language = "en";
 
 export default class Language {
 
-    static zn = {
+    /**
+     * 英文语言包
+     */
+    static en = {
         "games": "Games",
         "game": "Game",
         "team": "Teams",
@@ -26,6 +31,9 @@ export default class Language {
         "lowest": "Lowest"
     };
 
+    /**
+     *  中文语言包
+     */
     static zh = {
         "games": "场比赛",
         "game": "比赛",
@@ -48,9 +56,12 @@ export default class Language {
      * 根据系统语言进行相关配置
      * @returns {Object}
      */
-    static getLanguage() {
-        const language = NativeModules.RNI18n.locale.split(/\_/g)[0].toLocaleLowerCase();
-        return this[language];
+    static getLanguage(callback) {
+        //  获取操作系统的语言
+        DeviceExtension.getInfo((ex, info) => {
+            language = info.language.toLowerCase().split("-")[0];
+            callback(this[language]);
+        });
     }
 
 }
